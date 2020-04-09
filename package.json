@@ -1,0 +1,36 @@
+{
+  "name": "satyrium_api",
+  "version": "0.0.1",
+  "description": "API about air pollution data in Bogotá",
+  "main": "index.js",
+  "scripts": {
+    "start": "rimraf ./dist & npx tsc & node dist/index.js "
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/YuelWolf/Satyrium_API.git"
+  },
+  "keywords": [
+    "ari",
+    "pulliont",
+    "api"
+  ],
+  "author": "Andrés Rodríguez",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/YuelWolf/Satyrium_API/issues"
+  },
+  "homepage": "https://github.com/YuelWolf/Satyrium_API#readme",
+  "devDependencies": {
+    "@types/express": "^4.17.5",
+    "@types/mongoose": "^5.7.9",
+    "nodemon": "^2.0.3",
+    "typescript": "^3.8.3"
+  },
+  "dependencies": {
+    "express": "^4.17.1",
+    "mongoose": "^5.9.7",
+    "morgan": "^1.10.0",
+    "rimraf": "^3.0.2"
+  }
+}
