@@ -5,7 +5,6 @@ COPY ["package.json", "package-lock.json" , "/usr/src/"]
 WORKDIR /usr/src 
 
 RUN npm install
-RUN npx tsc
 
 COPY [".", "/usr/src/"]
 
