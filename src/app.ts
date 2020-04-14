@@ -1,14 +1,19 @@
-import express from 'express';
-import morgan from 'morgan';
+import express from 'express'
+import morgan from 'morgan'
+
+
+//Routes
+import indexRoutes from './routes'
+import userRoutes from './routes/user'
 
 class Application {
     app: express.Application;
 
     constructor(){
         this.app = express()
-        this.settings();
-        this.middlewares();
-        this.routes();
+        this.settings()
+        this.middlewares()
+        this.routes()
     }
 
     settings(){
@@ -16,20 +21,21 @@ class Application {
     }
 
     middlewares(){
-        this.app.use(morgan('dev'));
+        this.app.use(morgan('dev'))
     }
 
     routes(){
-
+        this.app.use(indexRoutes)
+        this.app.use(userRoutes)
     }
 
     start(){
         this.app.listen(this.app.get('port'), () => {
-            console.log('Server on port ', this.app.get('port'));            
+            console.log('Server on port ', this.app.get('port'))         
         })
     }
 
 
 }
 
-export default Application;
+export default Application
