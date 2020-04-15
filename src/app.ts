@@ -3,7 +3,6 @@ import morgan from 'morgan'
 
 
 //Routes
-import indexRoutes from './routes'
 import userRoutes from './routes/user'
 
 class Application {
@@ -17,16 +16,17 @@ class Application {
     }
 
     settings(){
-        this.app.set('port', 3000)
+        this.app.set('port', 4000)
     }
 
     middlewares(){
         this.app.use(morgan('dev'))
+        this.app.use(express.json())
+        this.app.use(express.urlencoded({extended: false}))
     }
 
     routes(){
-        this.app.use(indexRoutes)
-        this.app.use(userRoutes)
+        this.app.use('/user',userRoutes)
     }
 
     start(){
@@ -34,8 +34,6 @@ class Application {
             console.log('Server on port ', this.app.get('port'))         
         })
     }
-
-
 }
 
 export default Application
