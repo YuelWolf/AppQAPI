@@ -1,17 +1,14 @@
-import { Router, Request, Response } from 'express';
+import { Router, Request, Response } from 'express'
+import {userCtrl} from '../controllers/userController'
 
-const router = Router();
+const router: Router = Router();
 
 //Model
-import User from "../models/user";
+import User from "../models/user"
 
-router.route('/create')
+router.route('/login/:usuario/:password')
     .get((req: Request, res: Response) => {
-        res.send('received')
-    })
-    .post((req:Request, res:Response)=> {
-        const {name, email, password} = req.body
-        
+        userCtrl.login
     })
 
-export default router;
+export default router
