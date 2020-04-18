@@ -6,9 +6,14 @@ const router: Router = Router();
 //Model
 import User from "../models/user"
 
-router.route('/login/:usuario/:password')
+router.route('/login/:email/:password')
     .get((req: Request, res: Response) => {
-        userCtrl.login
+        userCtrl.login(req, res)
+    })
+
+router.route('/create')
+    .post((req: Request, res:Response) => {
+        userCtrl.createUser(req, res)
     })
 
 export default router
