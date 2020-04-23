@@ -26,14 +26,17 @@ class UserCtrl{
 
     public async createUser(req:Request, res: Response) {
         const usuarioExistente = await UserModel.findOne({ email: req.params.email })
-        if (usuarioExistente) res.json({ 'status': 'el usuario ya existe' })
+        const user = new UserModel({
+          name: req.body.name.trim(),
+          email: req.body.email.trim(),
+          password: req.body.password
+        })
+        const {confirm_password} = req.body;
+        if (usuarioExistente) res.json({ 'status': 'el usuario ya existe' });
+        else if(user.password != confirm_password) res.json({'status': 'password no coincide'});
+        else if(user.password.length < 4) res.json({'status':'password muy corta'})
         else {
-          const user = new UserModel({
-            name: req.body.name.trim(),
-            email: req.body.email.trim(),
-            password: req.body.password
-          })
-          await user.save((err) => {
+            await user.save((err) => {
             if (err) res.json({ 'status': 'Información faltante o erronea' })
             else res.json({ 'status': 'usuario creado' })
           })
