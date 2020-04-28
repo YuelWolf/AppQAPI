@@ -1,11 +1,7 @@
-import mongoose, {Schema, model} from 'mongoose'
+import {Schema, model, Document} from 'mongoose'
+import bcrypt from 'bcryptjs'
 
-export interface User extends mongoose.Document {
-    name: string
-    email: string
-    password: string
-}
-
+//Schema
 const UserSchema = new Schema({
     name: {
         type: String,
@@ -21,6 +17,27 @@ const UserSchema = new Schema({
         type: String,
         required: true,
     }
-})
+}, {
+    timestamps: true
+});
 
-export default model<User>('User', UserSchema)
+//Interface
+interface IUserSchema extends Document {
+    name: string
+    email: string
+    password: string
+    encryptPassword(password: string) : string;
+    matchPassword(password: string): string;
+}
+
+//Methods
+UserSchema.methods.encryptPassword = async (password: string) => {
+    const salt = await bcrypt.genSalt(10);
+    return await bcrypt.hash(password,salt);
+};
+
+UserSchema.methods.matchPassword =  function(password: string){
+     bcrypt.compare(password, this.password )
+};
+
+export default model<IUserSchema>('User', UserSchema);

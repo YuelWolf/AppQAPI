@@ -17,28 +17,31 @@ class UserCtrl{
                 'status': 'Clave invalida'
                 })
             }
-            } else {
-            res.json({
-                'status': 'El usuario no existe'
-            })
+        } else {
+        res.json({
+            'status': 'El usuario no existe'
+        })
         }    
     }
 
     public async createUser(req:Request, res: Response) {
-        const usuarioExistente = await UserModel.findOne({ email: req.params.email })
+        const errors = [];
+        const usuarioExistente = await UserModel.findOne({ email: req.params.email });
         const user = new UserModel({
           name: req.body.name.trim(),
           email: req.body.email.trim(),
           password: req.body.password
         })
-        const {confirm_password} = req.body;
-        if (usuarioExistente) res.json({ 'status': 'el usuario ya existe' });
-        else if(user.password != confirm_password) res.json({'status': 'password no coincide'});
-        else if(user.password.length < 4) res.json({'status':'password muy corta'})
+        user.password = await user.encryptPassword(user.password)
+        const {confirm_password} = req.body.confirm_password;
+        if(usuarioExistente) errors.push({ 'status': 'El email ya esta en uso' });
+        if(user.password != confirm_password) errors.push({'status': 'Password no coincide'});
+        if(user.password.length < 4) errors.push({'status':'Password muy corta debe ser mayor a 4'})
+        if(errors.length>=1) res.json({errors});      
         else {
             await user.save((err) => {
             if (err) res.json({ 'status': 'Información faltante o erronea' })
-            else res.json({ 'status': 'usuario creado' })
+            else res.json({ 'status': 'Usuario creado' })
           })
         }
       }
