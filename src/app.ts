@@ -40,4 +40,4 @@ class Application {
     }
 }
 
-export default Application
+export default Application;

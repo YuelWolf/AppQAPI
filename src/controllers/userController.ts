@@ -4,7 +4,7 @@ import UserModel from '../models/user'
 
 class UserCtrl{
         
-    public async login (req:Request, res: Response)  { 
+    /*public async login (req:Request, res: Response)  { 
         const user = await UserModel.findOne({email: req.params.email})
         if (user) {
             if (user.password == req.params.password) {
@@ -22,7 +22,7 @@ class UserCtrl{
             'status': 'El usuario no existe'
         })
         }    
-    }
+    }*/
 
     public async createUser(req:Request, res: Response) {
         const errors = [];
@@ -32,13 +32,16 @@ class UserCtrl{
           email: req.body.email.trim(),
           password: req.body.password
         })
-        user.password = await user.encryptPassword(user.password)
-        const {confirm_password} = req.body.confirm_password;
+        const confirm_password = req.body.confirm_password;
         if(usuarioExistente) errors.push({ 'status': 'El email ya esta en uso' });
+        if(!confirm_password) errors.push({'status': 'Debe confirmar la password'});
         if(user.password != confirm_password) errors.push({'status': 'Password no coincide'});
-        if(user.password.length < 4) errors.push({'status':'Password muy corta debe ser mayor a 4'})
+        console.log(user.password.length);        
+        if(user.password.length <= 4) errors.push({'status':'Password muy corta debe ser mayor a 4'})
         if(errors.length>=1) res.json({errors});      
         else {
+            user.password = await user.encryptPassword(user.password)
+            console.log(user);            
             await user.save((err) => {
             if (err) res.json({ 'status': 'Información faltante o erronea' })
             else res.json({ 'status': 'Usuario creado' })
