@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import UserModel from '../models/user'
+import {User} from '../models/user'
 
 
 class UserCtrl{
@@ -26,8 +26,8 @@ class UserCtrl{
 
     public async createUser(req:Request, res: Response) {
         const errors = [];
-        const usuarioExistente = await UserModel.findOne({ email: req.params.email });
-        const user = new UserModel({
+        const usuarioExistente = await User.findOne({ email: req.params.email });
+        const user = new User({
           name: req.body.name.trim(),
           email: req.body.email.trim(),
           password: req.body.password
@@ -50,14 +50,14 @@ class UserCtrl{
       }
       
       public async updateUser(req:Request, res: Response) {
-        const currentUser = await UserModel.findById(req.params.id)
+        const currentUser = await User.findById(req.params.id)
         if(currentUser){
             const user = {
               name: (req.body.name) ? req.body.name.trim() : currentUser.name,
               email: (req.body.email) ? req.body.email.trim() : currentUser.email,
               password: (req.body.password) ? req.body.password.trim() : currentUser.password
             }
-            await UserModel.findByIdAndUpdate(req.params.id, { $set: user }, (err) => {
+            await User.findByIdAndUpdate(req.params.id, { $set: user }, (err) => {
               if (err) res.json({ 'status': 'Error al actualizar' })
             })
             res.json({
@@ -72,7 +72,7 @@ class UserCtrl{
       }
       
       public async deleteUserModel (req:Request, res: Response){
-        await UserModel.findByIdAndRemove(req.params.id, (err) => {
+        await User.findByIdAndRemove(req.params.id, (err) => {
           if (err) res.json({ 'status': 'Error al eliminar' })
         })
         res.json({
@@ -80,7 +80,5 @@ class UserCtrl{
         })
       }
       
-      
-
-}
+    }
 export const userCtrl = new UserCtrl()

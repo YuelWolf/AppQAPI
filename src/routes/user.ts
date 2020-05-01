@@ -4,9 +4,6 @@ import passport from '../config/passport'
 
 const router: Router = Router();
 
-//Model
-import User from "../models/user"
-
 router.route('/login')
     .post(passport.authenticate('local'))
 

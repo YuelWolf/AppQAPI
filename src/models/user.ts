@@ -1,4 +1,5 @@
 import {Schema, model, Document} from 'mongoose'
+import mongoose from "mongoose";
 import bcrypt from 'bcryptjs'
 
 //Schema
@@ -11,6 +12,7 @@ const UserSchema = new Schema({
     email: {
         type: String,
         required: true,
+        unique: true,
         lowercase: true
     },
     password: {
@@ -21,14 +23,18 @@ const UserSchema = new Schema({
     timestamps: true
 });
 
-//Interface
-interface IUserSchema extends Document {
+
+export type UserDocument = Document & {
     name: string
     email: string
     password: string
-    encryptPassword(password: string) : string;
-    matchPassword(password: string): string;
+    encryptPassword: (password: string) => string;
+    matchPassword:comparePasswordFunction;
 }
+
+//Types
+//type matchPasswordFunction = (matchPassword:(password: string)=>{})=> boolean
+type comparePasswordFunction = (candidatePassword: string, cb: (err: any, isMatch: any) => {}) => void;
 
 //Methods
 UserSchema.methods.encryptPassword = async (password: string) => {
@@ -36,8 +42,17 @@ UserSchema.methods.encryptPassword = async (password: string) => {
     return await bcrypt.hash(password,salt);
 }
 
-UserSchema.methods.matchPassword =  async function(password: string){    
+/*UserSchema.methods.matchPassword =  async function(password: string){    
      return await bcrypt.compare(password, this.password )
-}
+}*/
 
-export default model<IUserSchema>('User', UserSchema);
+const comparePassword: comparePasswordFunction = function (candidatePassword, cb) {
+    bcrypt.compare(candidatePassword, this.password, (err: mongoose.Error, isMatch: boolean) => {
+        cb(err, isMatch);
+    });
+};
+
+UserSchema.methods.comparePassword = comparePassword;
+
+
+export const User = model<UserDocument>('User', UserSchema);

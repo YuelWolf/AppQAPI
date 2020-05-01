@@ -1,31 +1,32 @@
-import passport from 'passport'
-import {Strategy} from 'passport-local'
-import User from '../models/user'
+import passport from 'passport';
+import passportLocal from 'passport-local';
+import {Request, Response, NextFunction} from 'express';
+import {User, UserDocument} from '../models/user';
 
-passport.use(new Strategy({
-    usernameField: 'email',
-    passwordField: 'password'
-}, async (email:string, password:string, done:any) =>{
+const LocalStrategy = passportLocal.Strategy;
+
+passport.use(new LocalStrategy({
+    usernameField: 'email'
+}, (email, password, done) =>{
     // Match email's user
-    const user = await User.findOne({email})
+    const user =  User.findOne({email: email.toLowerCase()})
     console.log(user);
     
     if (!user) {
-        return done(null, false, {status: 'No se ha encontrado el usuario'})
+        return done(null, false, {message: 'No se ha encontrado el usuario'})
     } else {
         //Match password's user
-        const match = await user.matchPassword(password)
-        console.log(match);
-        
+        const match =  user.matchPassword(password)
+        console.log(match);        
         if (match) {
             return done(null,true, user);
         } else {
-            return done(null, false, {status: 'Password incorrecta'})
+            return done(null, false, {message: 'Password incorrecta'})
         }
     }
 }));
 
-passport.serializeUser((user:any, done) => {
+passport.serializeUser<any,any>((user, done) => {
     done(null, user.id);
 });
 
