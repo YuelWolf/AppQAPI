@@ -4,6 +4,7 @@
   "description": "API about air pollution data in Bogotá",
   "main": "index.js",
   "scripts": {
+    "start": "node dist/index.js",
     "dev": "ts-node src/index.ts",
     "clean": "rimraf ./dist"
   },
@@ -24,10 +25,12 @@
   "homepage": "https://github.com/YuelWolf/Satyrium_API#readme",
   "devDependencies": {
     "@types/bcryptjs": "^2.4.2",
+    "@types/cors": "^2.8.6",
     "@types/express": "^4.17.5",
     "@types/mongoose": "^5.7.9",
     "@types/morgan": "^1.9.0",
     "@types/passport": "^1.0.3",
+    "@types/passport-jwt": "^3.0.3",
     "@types/passport-local": "^1.0.33",
     "nodemon": "^2.0.3",
     "ts-node": "^8.8.2",
@@ -35,10 +38,13 @@
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
     "express": "^4.17.1",
+    "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.9.7",
     "morgan": "^1.10.0",
     "passport": "^0.4.1",
+    "passport-jwt": "^4.0.0",
     "passport-local": "^1.0.0",
     "rimraf": "^3.0.2"
   }

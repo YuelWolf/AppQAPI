@@ -1,15 +1,17 @@
-import mongoose from 'mongoose';
+import mongoose, {ConnectionOptions} from 'mongoose';
+import config from './config/config'
+
+const dbOptions: ConnectionOptions = {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+};
 
 async function connect(){
     try {
-        await mongoose.connect('mongodb://db:27017/appqdb',{
-            useNewUrlParser: true
-        });
-        console.log('>>> Database connected');
-        
+        await mongoose.connect(config.DB.URI, dbOptions);
+        console.log('>>> Database connected');        
     } catch (error) {
-        console.log('Error');
-        
+        console.log('Error');        
     }
 }
 

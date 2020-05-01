@@ -1,9 +1,8 @@
 import {Schema, model, Document} from 'mongoose'
-import mongoose from "mongoose";
 import bcrypt from 'bcryptjs'
 
 //Schema
-const UserSchema = new Schema({
+const userSchema = new Schema({
     name: {
         type: String,
         required: true,
@@ -23,36 +22,34 @@ const UserSchema = new Schema({
     timestamps: true
 });
 
-
-export type UserDocument = Document & {
-    name: string
-    email: string
-    password: string
-    encryptPassword: (password: string) => string;
-    matchPassword:comparePasswordFunction;
+//Interface
+export interface IUser extends Document {
+    name: string;
+    email: string;
+    password: string;
+    comparePassword: (password: string) => Promise<Boolean>;
 }
 
-//Types
-//type matchPasswordFunction = (matchPassword:(password: string)=>{})=> boolean
-type comparePasswordFunction = (candidatePassword: string, cb: (err: any, isMatch: any) => {}) => void;
+//Pre
+userSchema.pre<IUser>('save', async function(next){
+    if(!this.isModified('password')) return next();
+    const salt = await bcrypt.genSalt(10);
+    const hash = await bcrypt.hash(this.password,salt);
+    this.password = hash;
+    next();
+})
+
+userSchema.pre<IUser>('update', async function(next){
+    if(!this.isModified('password')) return next();
+    const salt = await bcrypt.genSalt(10);
+    const hash = await bcrypt.hash(this.password,salt);
+    this.password = hash;
+    next();
+})
 
 //Methods
-UserSchema.methods.encryptPassword = async (password: string) => {
-    const salt = await bcrypt.genSalt(10);
-    return await bcrypt.hash(password,salt);
-}
-
-/*UserSchema.methods.matchPassword =  async function(password: string){    
+userSchema.methods.comparePassword =  async function(password: string): Promise<boolean>{    
      return await bcrypt.compare(password, this.password )
-}*/
-
-const comparePassword: comparePasswordFunction = function (candidatePassword, cb) {
-    bcrypt.compare(candidatePassword, this.password, (err: mongoose.Error, isMatch: boolean) => {
-        cb(err, isMatch);
-    });
 };
 
-UserSchema.methods.comparePassword = comparePassword;
-
-
-export const User = model<UserDocument>('User', UserSchema);
+export default model<IUser>('User', userSchema);

@@ -1,25 +1,22 @@
-import passport from 'passport';
+/*import passport from 'passport';
 import passportLocal from 'passport-local';
 import {Request, Response, NextFunction} from 'express';
-import {User, UserDocument} from '../models/user';
+import {User} from '../models/user';
 
 const LocalStrategy = passportLocal.Strategy;
 
 passport.use(new LocalStrategy({
     usernameField: 'email'
-}, (email, password, done) =>{
-    // Match email's user
-    const user =  User.findOne({email: email.toLowerCase()})
-    console.log(user);
-    
+}, async (email, password, done) =>{
+    // Match email's user    
+    const user =  await User.findOne({email: email.toLowerCase()})    
     if (!user) {
         return done(null, false, {message: 'No se ha encontrado el usuario'})
     } else {
         //Match password's user
-        const match =  user.matchPassword(password)
-        console.log(match);        
+        const match =  await user.comparePassword(password)   
         if (match) {
-            return done(null,true, user);
+            return done(null,user, {message: 'todo copas'});
         } else {
             return done(null, false, {message: 'Password incorrecta'})
         }
@@ -36,4 +33,4 @@ passport.deserializeUser((id, done) => {
     })
 });
 
-export default passport;
+export default passport;*/
