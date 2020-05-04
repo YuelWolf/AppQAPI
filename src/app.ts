@@ -2,11 +2,13 @@ import express from 'express'
 import morgan from 'morgan'
 import cors from 'cors'
 import passport from 'passport'
+import passportMiddleware from './middlewares/passport'
 
 
 //Routes
 import userRoutes from './routes/user'
 import authRoutes from './routes/auth.routes'
+import specialRoutes from './routes/special.routes'
  
 
 class Application {
@@ -30,11 +32,13 @@ class Application {
         this.app.use(express.urlencoded({extended: false}));
         this.app.use(passport.initialize());
         this.app.use(passport.session());
+        passport.use(passportMiddleware);
     }
 
     routes(){
         this.app.use('/user',userRoutes);
         this.app.use('/auth',authRoutes);
+        this.app.use('/special', specialRoutes);
     }
 
     start(){
